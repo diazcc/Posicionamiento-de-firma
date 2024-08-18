@@ -2,6 +2,7 @@
   <main class="main" :ref="drop">
     <p>Posicionamiento VUE</p>
     <input type="file" @change="getFile" />
+    <PdfModifierAtom :data-pdf-modifier="dataPdfModifier" />
     <div class="main__content">
       <ul class="main__content__signs">
         <DraggableBoxAtom v-for="(value, key) in boxes" :id="key" :key="key" :left="value.left" :top="value.top"
@@ -20,7 +21,23 @@ import DraggableBoxAtom from '../../atom/DraggableBox/DraggableBox.atom.vue';
 import { Reactive, reactive, Ref, ref, watch } from 'vue'
 import PdfViewerAtom from '../../atom/pdf-viewer/PdfViewer.atom.vue';
 import { ItemTypes } from '../../../interfaces/ItemTypes';
+import PdfModifierAtom from '../../atom/pdf-modifier/PdfModifier.atom.vue';
 const currentBox: any = reactive({});
+const dataPdfModifier: any = reactive({
+  urlPdf: '',
+  pages: [
+    {
+      texts: [
+        {
+
+          value: '',
+          posX: '',
+          posY: '',
+        }
+      ],
+    }
+  ]
+});
 const dataPdfViewer: any = reactive(
   {
     urlPdf: '',
@@ -52,10 +69,7 @@ const [, drop] = useDrop(() => ({
     const delta = monitor.getDifferenceFromInitialOffset() as XYCoord;
     const newLeft = Math.round(item.left + delta.x);
     const newTop = Math.round(item.top + delta.y);
-    console.log('hijo', {
-      top: newTop,
-      left: newLeft
-    });
+    
     // Save initial position before moving
     const initialLeft = item.left;
     const initialTop = item.top;
@@ -67,9 +81,12 @@ const [, drop] = useDrop(() => ({
       ``
       if (elFather) {
         const rectFather = elFather.getBoundingClientRect();
+        console.log(rectFather.height-20);
+        
         console.log('elFather', {
           top: rectFather.top + 9,
-          left: rectFather.left + 9
+          left: rectFather.left + 9,
+          bottom: rectFather.bottom
         });
         // Define the dimensions of the DraggableBoxAtom
         const boxWidth = 100; // Reemplaza con el ancho real de tu DraggableBoxAtom
@@ -85,7 +102,7 @@ const [, drop] = useDrop(() => ({
           id: item.id,
           top: excessTop,
           left: excessLeft
-        }) && moveBox(item.id, newLeft, newTop) 
+        }) && moveBox(item.id, newLeft, newTop)
 
 
         /* const isInside = (
@@ -109,16 +126,31 @@ const [, drop] = useDrop(() => ({
     return undefined;
   },
 }));
-function setSignOnPdf(elPdf: Element, position: { id: string, top: any, left: any }):boolean {
+function setSignOnPdf(elPdf: Element, position: { id: string, top: any, left: any }): boolean {
   console.log(elPdf);
+  const rectFather = elPdf.getBoundingClientRect();
   const elSig: any = document.querySelector(`[data-id="${position.id}"]`)
   console.log(elSig);
+  console.log('siiiiiiiiiiiii',{
+    value: 'Firmado',
+    posX: position.left,
+    posY: position.top,
+  });
   if (!elPdf.contains(elSig)) {
-    console.log('siiiiiiiiiiiii');
     elPdf.appendChild(elSig);
     moveBox(position.id, position.left, position.top)
+
+    console.log('hijo', {
+      top: position.left,
+      left: position.top
+    });
+    dataPdfModifier.pages[0].texts[0] = {
+      value: 'Firmado',
+      posX: position.left,
+      posY: ((rectFather.height -20 ) -position.top) - 140,
+    }
     return false;
-  }else{
+  } else {
     return true;
   }
 }
@@ -164,6 +196,7 @@ function getFile(event: Event) {
     const reader = new FileReader();
     reader.onload = (e) => {
       dataPdfViewer.urlPdf = e.target?.result;
+      dataPdfModifier.urlPdf = e.target?.result;
     };
     reader.readAsDataURL(file);
   }

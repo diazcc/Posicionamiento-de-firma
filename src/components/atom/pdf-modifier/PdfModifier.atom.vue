@@ -7,7 +7,7 @@
 
     structure propsdata 
     dataPdfModifier = reactive({
-        nameFile :'',
+        urlPdf:'',
         pages:[
           {
             images:[
@@ -50,34 +50,38 @@ const addImageToPdf = async () => {//add image to pdf must be improve
     const existingPdfBytes = await fetch(pdfUrl).then((res) => res.arrayBuffer());
 
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const firstPage = pdfDoc.getPages()[0];
 
-    //Examples how get the page and can modify.
+   /*  //Examples how get the page and can modify.
     const secondPage = pdfDoc.getPages()[1];
     const fourthPage = pdfDoc.getPages()[3];
 
     const imageUrl = props.dataPdfModifier.urlImg;
     const imageBytes = await fetch(imageUrl).then((res) => res.arrayBuffer());
-
-    const image = await pdfDoc.embedJpg(imageBytes);
+ */
+ /*    const image = await pdfDoc.embedJpg(imageBytes);
     secondPage.drawImage(image, {
       x: 50, 
       y: 200, 
       width: 100, 
       height: 100, 
     });
-    
-    fourthPage.drawImage(image, {
+     */
+/*     fourthPage.drawImage(image, {
       x: 50, 
       y: 200, 
       width: 100, 
       height: 100, 
     });
-
-    const text = "¡Texto agregado en PDF!";
+ */
+  console.log(props.dataPdfModifier.pages[0].texts[0].posX); 
+     console.log(props.dataPdfModifier.pages[0].texts[0].posY);
+    const text = props.dataPdfModifier.pages[0].texts[0].value;
     const fontSize = 12;
-    const x = 50; 
-    const y = 200;
-    secondPage.drawText(text, {
+    const x = props.dataPdfModifier.pages[0].texts[0].posX; 
+    const y =  props.dataPdfModifier.pages[0].texts[0].posY ;
+    /* const y =  0; */ //ERORRRRRRRRRRRRRRRRRRRRRRRRRRR REVISAR COMIENZA EN PLANO CARTESIANO DESDE EL INICIO DE PUNTO  NO DESDE X y Y CONVENCIONAL DE HTML, VA DE ABAJO AHACIA
+    firstPage.drawText(text, {
       x,
       y,
       size: fontSize,
