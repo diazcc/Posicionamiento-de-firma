@@ -3,37 +3,25 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    position: relative;
     &__content {
         display: flex;
         width: 100%;
-        flex-grow: 1;
+        height: 90vh;
         position: relative;
+        flex-grow: 1;
         &__signs {
             border: 1px solid gray;
             min-width: 21%;
             padding: 1rem;
-            gap: 1rem;
             display: flex;
             flex-direction: column;
-            flex-wrap: wrap;
             transition: all ease-out 0.2s;
-            li {
-                background-color: rgb(190, 190, 190);
-                padding: 1rem;
-                border: 1px solid black;
-                transition: all ease-out 0.2s;
-                position: absolute;
-                background-color: white;
-                border: 1px dashed gray;
-                cursor: move;
-                z-index: 3;
-                &:hover {
-                    cursor: pointer;
-                    background-color: rgb(161, 161, 161);
-                }
-            
-            }
+            overflow: hidden;
+            overflow-y: auto;
+            max-width: 4rem;
+            align-items: center;
+            position: relative;
         }
         &__pdf {
             flex-grow: 1;
@@ -41,6 +29,18 @@
             padding: 4rem;
             position: relative;
         }
+    }
+
+    &__nav {
+        height: 10vh;
+        max-height: 7rem;
+        background-color: gray;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 0.5rem;
+        padding-right: 2rem;
     }
 }
 
@@ -56,4 +56,3 @@
     line-height: normal;
     float: left;
 }
-

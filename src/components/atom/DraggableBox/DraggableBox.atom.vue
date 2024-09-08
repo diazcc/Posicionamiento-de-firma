@@ -1,22 +1,33 @@
+
+<!-- 
+ 
+  prop: {
+      name: 'Sofia',
+      email: 'sofia@example.com',
+      id: '',
+      type: 'img',
+      content: {
+        base64: 'image_base64_5'
+      },
+      top: 500,
+      left: 550,
+      page: '5',
+    }
+
+-->
+
 <template>
   <div v-show="isDragging" :ref="drag" />
-  <div
-    v-show="!isDragging"
-    :ref="drag"
-    class="box"
-    :style="{ 
-      left: `${left}px`, 
-      top: `${top}px`, 
-      visibility: isDragging ? 'hidden' : 'visible' 
-    }"
-    role="Box"
-    :data-id="props.id"
-    data-testid="box"
-  >
-    <slot></slot>
+  <div v-show="!isDragging" :ref="drag" class="box" :style="{
+    left: `${propDraggBox.left}px`,
+    top: `${propDraggBox.top}px`,
+    visibility: isDragging ? 'hidden' : 'visible',
+  position:( propDraggBox.left != 0 && propDraggBox.left != 0) ? 'absolute':'relative'
+  }" role="Box" :data-id="email+index" data-testid="box">
+    <p>{{ propDraggBox.name }}</p>
+    <p>{{ propDraggBox.email }}</p>
   </div>
 </template>
-
 
 
 <script lang="ts" setup>
@@ -24,16 +35,11 @@ import { useDrag } from 'vue3-dnd'
 import { reactive, ref, Ref, ToRefs, toRefs, watch } from 'vue';
 const emit: any = defineEmits(['isDragging'])
 const isDragging: Ref<boolean> = ref(false);
-const props = defineProps<{
-  id: any
-  left: number
-  top: number
-  hideSourceOnDrag?: boolean
-}>()
+const propDraggBox: any = defineProps(['dataDraggableBox','index','top','left','email','name']);
 
 const [collect, drag] = useDrag(() => ({
   type: 'box',
-  item: { id: props.id, left: props.left, top: props.top },
+  item: { email: propDraggBox.email , left: propDraggBox.left, top: propDraggBox.top, index:propDraggBox.index },
   collect: monitor => {
     isDragging.value = monitor.isDragging();
     return {
@@ -43,19 +49,16 @@ const [collect, drag] = useDrag(() => ({
 }))
 watch(() => isDragging,
   (newValue, oldValue) => {
-    console.log(newValue.value);
     emit('isDragging', {
-      id: props.id,
-      left: props.left,
-      top: props.top,
+      email: propDraggBox.email,
+      left: propDraggBox.left,
+      top: propDraggBox.top,
+      index:propDraggBox.index,
       isDragging: newValue.value
     })
   },
   { deep: true }
 );
-
-
-
 
 </script>
 

@@ -1,28 +1,218 @@
 <template>
   <main class="main" :ref="drop">
-    <p>Posicionamiento VUE</p>
-    <input type="file" @change="getFile" />
-    <PdfModifierAtom :data-pdf-modifier="dataPdfModifier" />
     <div class="main__content">
       <ul class="main__content__signs">
-        <DraggableBoxAtom v-for="(value, key) in boxes" :id="key" :key="key" :left="value.left" :top="value.top"
-          @isDragging="getStateDragggin">
-          {{ value.title }}
-        </DraggableBoxAtom>
+        <template v-for="(sign, index) in dataDraggableBox.signs">
+          <DraggableBoxAtom :email="sign.email" :name="sign.name" :top="sign.position.top" :left="sign.position.left"
+            :index="index" />
+        </template>
       </ul>
       <PdfViewerAtom :data-pdf-viewer="dataPdfViewer" />
     </div>
+    <nav class="main__nav">
+      <button>Atras</button>
+      <PdfModifierAtom :data-pdf-modifier="dataPdfModifier" />
+    </nav>
   </main>
 </template>
 
 <script lang="ts" setup>
 import { useDrop, XYCoord } from 'vue3-dnd'
 import DraggableBoxAtom from '../../atom/DraggableBox/DraggableBox.atom.vue';
-import { Reactive, reactive, Ref, ref, watch } from 'vue'
+import { onMounted, Reactive, reactive, Ref, ref, watch } from 'vue'
 import PdfViewerAtom from '../../atom/pdf-viewer/PdfViewer.atom.vue';
 import { ItemTypes } from '../../../interfaces/ItemTypes';
 import PdfModifierAtom from '../../atom/pdf-modifier/PdfModifier.atom.vue';
-const currentBox: any = reactive({});
+const dataDraggableBox: any = reactive({
+  signs: [
+    {
+      name: 'Sofia',
+      email: 'sofia@example.com',
+      type: 'img',
+      content__img: {
+        base64: 'image_base64_5'
+      },
+      position: {
+        top: 0,
+        left: 0,
+      },
+      page: '5',
+      width: 197.59,
+      height: 60.8
+    },
+    {
+      name: 'aaa',
+      email: 'aaaa@sss.com',
+      type: 'img',
+      content__img: {
+        base64: 'image_base64_5'
+      },
+      position: {
+        top: 0,
+        left: 0,
+      },
+      page: '5',
+      width: 197.59,
+      height: 60.8
+    },
+    {
+      name: 'Carlos',
+      email: 'carlos@example.com',
+      type: 'text',
+      content__text: {
+        text: 'Carlos Signature'
+      },
+      position: {
+        top: 0,
+        left: 0,
+      },
+      page: '3',
+      width: 197.59,
+      height: 60.8
+    },
+    {
+      name: 'Maria',
+      email: 'maria@example.com',
+      type: 'img',
+      content__img: {
+        base64: 'image_base64_12'
+      },
+      position: {
+        top: 0,
+        left: 0,
+      },
+      page: '2',
+      width: 197.59,
+      height: 60.8
+    },
+    {
+      name: 'John',
+      email: 'john.doe@example.com',
+      type: 'canvas',
+      content__canvas: {
+        width: 400,
+        height: 200,
+        drawing: 'canvas_drawing_data'
+      },
+      position: {
+        top: 0,
+        left: 0,
+      },
+      page: '4',
+      width: 197.59,
+      height: 60.8
+    },
+    {
+      name: 'Elena',
+      email: 'elena@example.com',
+      type: 'text',
+      content__text: {
+        text: 'Elena Graphical Signature'
+      },
+      position: {
+        top: 0,
+        left: 0,
+      },
+      page: '6',
+      width: 197.59,
+      height: 60.8
+    },
+    {
+      name: 'Lucas',
+      email: 'lucas@example.com',
+      type: 'img',
+      content__img: {
+        base64: 'image_base64_25'
+      },
+      position: {
+        top: 0,
+        left: 0,
+      },
+      page: '1',
+      width: 197.59,
+      height: 60.8
+    },
+    {
+      name: 'Ana',
+      email: 'ana.smith@example.com',
+      type: 'canvas',
+      content__canvas: {
+        width: 300,
+        height: 150,
+        drawing: 'canvas_drawing_data_ana'
+      },
+      position: {
+        top: 0,
+        left: 0,
+      },
+      page: '7',
+      width: 197.59,
+      height: 60.8
+    },
+    {
+      name: 'Paul',
+      email: 'paul@example.com',
+      type: 'text',
+      content__text: {
+        text: 'Paul Handwritten'
+      },
+      position: {
+        top: 0,
+        left: 0,
+      },
+      page: '3',
+      width: 197.59,
+      height: 60.8
+    },
+    {
+      name: 'Samantha',
+      email: 'samantha@example.com',
+      type: 'img',
+      content__img: {
+        base64: 'image_base64_30'
+      },
+      position: {
+        top: 0,
+        left: 0,
+      },
+      page: '8',
+      width: 197.59,
+      height: 60.8
+    },
+    {
+      name: 'Paul',
+      email: 'paul@example.com',
+      type: 'text',
+      content__text: {
+        text: 'Paul Handwritten'
+      },
+      position: {
+        top: 0,
+        left: 0,
+      },
+      page: '3',
+      width: 197.59,
+      height: 60.8
+    },
+    {
+      name: 'Samantha',
+      email: 'samantha@example.com',
+      type: 'img',
+      content__img: {
+        base64: 'image_base64_30'
+      },
+      position: {
+        top: 0,
+        left: 0,
+      },
+      page: '8',
+      width: 197.59,
+      height: 60.8
+    }
+  ]
+  ,
+  userSign: ''
+});
 const dataPdfModifier: any = reactive({
   urlPdf: '',
   pages: [
@@ -47,159 +237,147 @@ const dataPdfViewer: any = reactive(
     onClose: () => {
     }
   });
-const boxes = reactive<{
-  [key: string]: {
-    top: number
-    left: number
-    title: string,
-    isDragging: boolean
-  }
-}>({
-  a: { top: 20, left: 80, title: 'Drag me around', isDragging: false },
-  b: { top: 180, left: 20, title: 'Drag me too', isDragging: false },
+
+
+onMounted(() => {
+  loadLocalPdf();
 })
 
-const moveBox = (id: string, left: number, top: number) => {
-  Object.assign(boxes[id], { left, top })
+const moveBox = (left: number, top: number, index: any) => {
+  dataDraggableBox.signs[index].left = left;
+  dataDraggableBox.signs[index].top = top;
 }
+
+
+
 const [, drop] = useDrop(() => ({
   accept: ItemTypes.BOX,
-
   drop(item: any, monitor: any) {
     const delta = monitor.getDifferenceFromInitialOffset() as XYCoord;
+    console.log('FirmaD (delta):', delta);
+    const left = Math.round(item.left + delta.x)
+    const top = Math.round(item.top + delta.y + 12)
+    const x = Math.round(delta.x + 9);
+    const y = Math.round(delta.y);
     const newLeft = Math.round(item.left + delta.x);
     const newTop = Math.round(item.top + delta.y);
-    
-    // Save initial position before moving
     const initialLeft = item.left;
     const initialTop = item.top;
-
     const clientOffset = monitor.getClientOffset();
     if (clientOffset) {
       const element = document.elementFromPoint(clientOffset.x, clientOffset.y);
       const elFather = element?.closest('.page');
-      ``
       if (elFather) {
-        const rectFather = elFather.getBoundingClientRect();
-        console.log(rectFather.height-20);
-        
-        console.log('elFather', {
-          top: rectFather.top + 9,
-          left: rectFather.left + 9,
-          bottom: rectFather.bottom
-        });
-        // Define the dimensions of the DraggableBoxAtom
-        const boxWidth = 100; // Reemplaza con el ancho real de tu DraggableBoxAtom
-        const boxHeight = 100; // Reemplaza con la altura real de tu DraggableBoxAtom
-
-
-        const excessTop = newTop - (rectFather.top + 9);
+        const rectFather = elFather.getBoundingClientRect()
+        const totalWidth = rectFather.width+rectFather.top;  // Ancho total del padre
+        const totalHeight = rectFather.height+rectFather.left; // Alto total del padre
+        const excessTop = newTop - 9;
         const excessLeft = newLeft - (rectFather.left + 9);
-
-
-        // Check if the DraggableBoxAtom is inside the dimensions of elFather
-        setSignOnPdf(elFather, {
-          id: item.id,
+        dataDraggableBox.signs[item.index].position = {
           top: excessTop,
-          left: excessLeft
-        }) && moveBox(item.id, newLeft, newTop)
+          left: excessLeft,
+          index: item.index
+        }
+        console.log(dataDraggableBox.signs[item.index].position.left);
+        
+        
+        if (setSignOnPdf(elFather, dataDraggableBox.signs[item.index])) {
+          const signLeft = dataDraggableBox.signs[item.index].position.left;
+          const signTop = dataDraggableBox.signs[item.index].position.top;
+          const signRight = signLeft + dataDraggableBox.signs[item.index].width;
+          const signBottom = signTop + dataDraggableBox.signs[item.index].height;
+          const isOverflowingX = signRight > totalWidth;
+          const isOverflowingY = signBottom > totalHeight;
+          if (isOverflowingX || isOverflowingY) {
+            console.log("La firma sobresale del padre.");
+            return false;
+          } else {
+            console.log("La firma está dentro de los límites.");
+          }
 
+          dataDraggableBox.signs[item.index].position = {
+            top: top,
+            left: left,
+            index: item.index
+          }
 
-        /* const isInside = (
-          newLeft >= rectFather.left &&
-          newLeft + boxWidth <= rectFather.right &&
-          newTop >= rectFather.top &&
-          newTop + boxHeight <= rectFather.bottom
-        );
-        if (isInside) {
-
-         
-        } else {
-          moveBox(item.id, initialLeft, initialTop);
-        } */
-
+        }
       } else {
         console.log('No parent element found with class "page"');
       }
+
     }
 
     return undefined;
   },
 }));
-function setSignOnPdf(elPdf: Element, position: { id: string, top: any, left: any }): boolean {
-  console.log(elPdf);
+function setSignOnPdf(elPdf: Element, sign: any): boolean {
+
+  /* {
+      name: 'Sofia',
+      email: 'sofia@example.com',
+      type: 'img',
+      content__img: {
+        base64: 'image_base64_5'
+      },
+      position: {
+        top: 0,
+        left: 0,
+      },
+      page: '5',
+      width: 197.59,
+      height: 60.8
+      width: 197.59,
+      height: 60.8
+    } */
   const rectFather = elPdf.getBoundingClientRect();
-  const elSig: any = document.querySelector(`[data-id="${position.id}"]`)
-  console.log(elSig);
-  console.log('siiiiiiiiiiiii',{
-    value: 'Firmado',
-    posX: position.left,
-    posY: position.top,
-  });
+  /* const totalWidth = rectFather.width;  // Ancho total del padre
+  const totalHeight = rectFather.height; // Alto total del padre */
+  const totalLeft = rectFather.left + 16; // Alto total del padre
+  const totalTop = rectFather.top + 16; // Alto total del padre
+
+  const elSig: any = document.querySelector(`[data-id="${sign.email + sign.position.index}"]`);
+  console.log('FirmaD (hijo):', elSig);
+
+
   if (!elPdf.contains(elSig)) {
     elPdf.appendChild(elSig);
-    moveBox(position.id, position.left, position.top)
+    moveBox(sign.position.left, sign.position.top, sign.position.index);
 
-    console.log('hijo', {
-      top: position.left,
-      left: position.top
-    });
+    // Calcula las posiciones absolutas de la firma
+    const signLeft = sign.position.left;
+    const signTop = sign.position.top;
+    const signRight = signLeft + sign.width;
+    const signBottom = signTop + sign.height;
+    console.log('Firma (sign.position.left):', sign.position.left);
+    console.log('Firma (signRight):', signRight);
+    console.log('Firma (signTop):', signTop);
+    // Comprueba si se sale de los límites del padre
+    /* const isOverflowingX = signRight > totalWidth;
+    const isOverflowingY = signBottom > totalHeight;
+ */
+
+    // Ajustar la posición del texto en el PDF
     dataPdfModifier.pages[0].texts[0] = {
       value: 'Firmado',
-      posX: position.left,
-      posY: ((rectFather.height -20 ) -position.top) - 140,
-    }
-    return false;
+      posX: sign.position.left,
+      posY: ((rectFather.height - 20) - sign.position.top) - 140,
+    };
+
+    return true;
   } else {
+    console.log('La firma ya está dentro del contenedor.');
     return true;
   }
 }
 
 
-function getStateDragggin(box: any): void {
-  /* console.log(box); */
-  if (box && box.id) {
-    currentBox.value = box;
-    /* console.log(currentBox.value);
-    console.log(currentBox.value.id); */
-    getPositionDraggableBox(currentBox.value.id)
-  } else {
-    console.error('Received invalid box:', box);
-  }
-}
 
 
-async function getPositionDraggableBox(key: any) {
-  console.log(key);
-  const draggableBox: HTMLElement | null = document.querySelector(`[data-id="${key}"]`);
-
-  if (draggableBox) {
-    const rect = draggableBox.getBoundingClientRect();
-    console.log('Position and dimensions of draggableBox:', {
-      top: rect.top + window.scrollY, // Ajuste para la posición en pantalla
-      left: rect.left + window.scrollX, // Ajuste para la posición en pantalla
-      bottom: rect.bottom + window.scrollY, // Ajuste para la posición en pantalla
-      right: rect.right + window.scrollX, // Ajuste para la posición en pantalla
-      width: rect.width,
-      height: rect.height
-    });
-  } else {
-    console.log(`Element with data-id="${key}" not found.`);
-  }
-}
-
-
-function getFile(event: Event) {
-  const target = event.target as HTMLInputElement;
-  const file = target.files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      dataPdfViewer.urlPdf = e.target?.result;
-      dataPdfModifier.urlPdf = e.target?.result;
-    };
-    reader.readAsDataURL(file);
-  }
+function loadLocalPdf() {
+  const localPdfUrl = new URL('../../../assets/files/pdf.pdf', import.meta.url).href; // Carga el PDF desde la ubicación local
+  dataPdfViewer.urlPdf = localPdfUrl;
+  dataPdfModifier.urlPdf = localPdfUrl;
 }
 </script>
 
