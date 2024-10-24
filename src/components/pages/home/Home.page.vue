@@ -50,9 +50,9 @@ const dataPdfModifier: any = reactive({
     {
       texts: [
         {
-          value: '',
-          posX: '',
-          posY: '',
+          value: 'hola',
+          posX: 2,
+          posY: 100,
         }
       ],
     }
@@ -282,7 +282,8 @@ const [, drop] = useDrop(() => ({
         const rectFather = elFather.getBoundingClientRect()
         const totalWidth = rectFather.width + rectFather.top;  // Ancho total del padre
         const totalHeight = rectFather.height + rectFather.left; // Alto total del padre
-
+        const totalTop = (rectFather.height - 85) - newTop; // THIS VALUE IS RECOMENDED
+        console.log(totalTop);
         if (isOutOfBounds(elSig as HTMLElement, elFather as HTMLElement)) {
           console.log('SI');
           dataDraggableBox.signs[item.index].position = {
@@ -290,7 +291,8 @@ const [, drop] = useDrop(() => ({
             left: newLeft,
             index: item.index
           }
-
+          dataPdfModifier.pages[0].texts[0].posX = newLeft; 
+          dataPdfModifier.pages[0].texts[0].posY = totalTop; 
         }
         if (valdiateSignOnPagePdf(elFather, elSig) == false) {
           setSignOnPdf(elFather, elSig)
@@ -344,7 +346,7 @@ function goBackSignToContainer(sign: any, index: any) {
 }
 
 function loadLocalPdf() {
-  const localPdfUrl = new URL('../../../assets/files/pdf.pdf', import.meta.url).href; // Carga el PDF desde la ubicación local
+  const localPdfUrl = new URL('../../../assets/files/tes.pdf', import.meta.url).href; // Carga el PDF desde la ubicación local
   dataPdfViewer.urlPdf = localPdfUrl;
   dataPdfModifier.urlPdf = localPdfUrl;
 }
